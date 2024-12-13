@@ -63,16 +63,11 @@ The `students_list.csv` can be directly edited or you can convert existing `xlsx
 
 Here is an example of the usage:
 ```py
-from generator.generator import (
-    Generator,
-    ShortQuestionsSet,
-    LargeQuestionsSet,
-)
-
+import exam_generator as EG
 
 if __name__ == "__main__":
 
-    generator = Generator(
+    generator = EG.Generator(
         course_name=r"Best courses ever",
         course_code="BEAMS666",
         year="1873-2024",
@@ -82,7 +77,7 @@ if __name__ == "__main__":
     )
 
     generator.add_set(
-        ShortQuestionsSet(
+        EG.ShortQuestionsSet(
             name="Theory",
             dataset_path="database_example/short_questions.txt",
             nb_questions=1,
@@ -92,7 +87,7 @@ if __name__ == "__main__":
     )
 
     generator.add_set(
-        LargeQuestionsSet(
+        EG.LargeQuestionsSet(
             name="Project",
             dataset_path="database_example/large_questions",
             nb_questions=1,
@@ -102,6 +97,7 @@ if __name__ == "__main__":
     )
 
     generator.generate_from_csv(filename="students_list.csv")
+
 ```
 
 # 4. TODOs
