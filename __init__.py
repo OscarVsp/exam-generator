@@ -1,1 +1,1 @@
-from .src import *
+from .exam_generator import *

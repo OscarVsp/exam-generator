@@ -1,4 +1,4 @@
-import src as EG
+import exam_generator as EG
 
 if __name__ == "__main__":
 
