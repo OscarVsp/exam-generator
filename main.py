@@ -4,45 +4,36 @@ from generator.generator import (
     LargeQuestionsSet,
 )
 
+
 if __name__ == "__main__":
 
     generator = Generator(
-        course_name=r"Digital architectures \& design",
-        course_code="ELECH409",
-        year="2023-2024",
-        session="1st",
+        course_name=r"Best courses ever",
+        course_code="BEAMS666",
+        year="1873-2024",
+        session="69nd",
         reset_page_counter=True,
-        output_dir="exam-files",
+        output_dir="exam-files-example",
     )
 
     generator.add_set(
         ShortQuestionsSet(
             name="Theory",
-            dataset_path="database/theory_questions.txt",
-            nb_questions=2,
-            consigne=r"No extra resource are allow for this part. Preparation time: $\sim$ 4 min",
+            dataset_path="database_example/short_questions.txt",
+            nb_questions=1,
+            consigne=r"Chat GPT is allowed. Preparation time: $\sim$ 10 sec.",
             blank_line=4,
         )
     )
 
     generator.add_set(
         LargeQuestionsSet(
-            name="Exercises",
-            dataset_path="database/exercises",
+            name="Project",
+            dataset_path="database_example/large_questions",
             nb_questions=1,
-            consigne=r"Personal handwritten notes are allowed for this part. Preparation time: $\sim$ 7 min",
+            consigne="Michel Osée is allowed for this part.",
             blank_page=1,
         )
     )
 
-    generator.add_set(
-        ShortQuestionsSet(
-            name="Project",
-            dataset_path="database/project_questions.txt",
-            nb_questions=1,
-            consigne=r"The printed report of the project is allowed for this part",
-            blank_line=4,
-        )
-    )
-
-    generator.generate_from_csv()
+    generator.generate_from_csv(filename="students_list.csv")
