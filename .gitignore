@@ -485,9 +485,9 @@ TSWLatexianTemp*
 # Custom
 database/**
 !database/**/.gitkeep
-latex/tmp/**
-!latex/tmp/**/.gitkeep
-latex/output-files/**
-!latex/output-files/**/.gitkeep
+generator/latex/tmp/**
+!generator/latex/tmp/**/.gitkeep
+generator/latex/output-files/**
+!generator/latex/output-files/**/.gitkeep
 exam-files/**
 !exam-files/**/.gitkeep

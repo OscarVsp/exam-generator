@@ -15,7 +15,7 @@ Edit the [students_list.csv](students_list.csv) with the list of students. The m
 
 DO NOT EDIT `.tex` and `.sty` files directly! Thoses are being generated automatically and will be override.
 
-Run [main.py](main.py). The generated pdf are available in the [exam_files/](/exam_files/) folder.
+Run [example.py](example.py). The generated pdf are available in the [exam_files-example/](/exam_files-example/) folder.
 
 # 2. Questions sets
 
@@ -29,7 +29,7 @@ The questions will be displayed as list of enumerated question with some optiona
 
 The questions have to be store in a `.txt` or `.md` file, with one question by line.
 
-Example of such dataset can be seen in [example/short_questions.txt](database_example/short_questions.txt)
+Example of such dataset can be seen in [database-example/short_questions.txt](database_example/short_questions.txt)
 
 
 ## 2.2. Large questions set
@@ -42,7 +42,7 @@ The question can have the following elements (using markdown syntax):
 - image: declared using the markdown syntax (i.e. `![alt text](path/to/image.png)`). The folder is used as root directory here.
 - code block: with optional language specifier.
 
-Example of such dataset can be seen in [example/large_question/](database_example/large_questions/)
+Example of such dataset can be seen in [database-example/large_question/](database_example/large_questions/)
 
 
 # 3. Generator
@@ -61,7 +61,48 @@ When `generate_from_csv(...)` is called, it load the [students_list.csv](student
 
 The `students_list.csv` can be directly edited or you can convert existing `xlsx` file. 
 
-Example of generator and question set configuration can be seen in [main.py](main.py)
+Here is an example of the usage:
+```py
+from generator.generator import (
+    Generator,
+    ShortQuestionsSet,
+    LargeQuestionsSet,
+)
+
+
+if __name__ == "__main__":
+
+    generator = Generator(
+        course_name=r"Best courses ever",
+        course_code="BEAMS666",
+        year="1873-2024",
+        session="69nd",
+        reset_page_counter=True,
+        output_dir="exam-files-example",
+    )
+
+    generator.add_set(
+        ShortQuestionsSet(
+            name="Theory",
+            dataset_path="database_example/short_questions.txt",
+            nb_questions=1,
+            consigne=r"Chat GPT is allowed. Preparation time: $\sim$ 10 sec.",
+            blank_line=4,
+        )
+    )
+
+    generator.add_set(
+        LargeQuestionsSet(
+            name="Project",
+            dataset_path="database_example/large_questions",
+            nb_questions=1,
+            consigne="Michel Osée is allowed for this part.",
+            blank_page=1,
+        )
+    )
+
+    generator.generate_from_csv(filename="students_list.csv")
+```
 
 # 4. TODOs
 

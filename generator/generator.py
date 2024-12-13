@@ -51,7 +51,7 @@ class Generator:
             os.makedirs(self.output_dir)
         self.questions_sets: List[BaseQuestionsSet] = []
         self.main_content: str = ""
-        self.latex_path: str = os.path.dirname(__main__.__file__)+"/latex"
+        self.latex_path: str = os.path.dirname(__file__)+"/latex"
 
         self._clear_tmp()
 
@@ -131,7 +131,7 @@ class Generator:
         random.seed(matricule)
 
         for questions_set in self.questions_sets:
-            questions_set.generate()
+            questions_set.generate(self.latex_path)
 
     def add_set(self, new_set: BaseQuestionsSet) -> None:
         """

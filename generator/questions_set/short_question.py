@@ -1,7 +1,6 @@
 from typing import List
 import random
 import os
-import __main__
 
 from .base_question_set import BaseQuestionsSet
 
@@ -35,7 +34,7 @@ class ShortQuestionsSet(BaseQuestionsSet):
                 for q in fp.readlines()
             ]
 
-    def generate(self) -> None:
+    def _generate_latex_content(self) -> None:
 
         latex_content = self.header
 
@@ -51,9 +50,4 @@ class ShortQuestionsSet(BaseQuestionsSet):
         else:
             latex_content += f"{self.dataset[indexes[0]]}"
 
-        with open(
-            f"{os.path.dirname(__main__.__file__)}/latex/tmp/{self.name.lower()}_set.tex",
-            mode="w",
-            encoding="UTF-8",
-        ) as fp:
-            fp.write(latex_content)
+        self.latex_content = latex_content

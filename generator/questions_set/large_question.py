@@ -37,7 +37,7 @@ class MarkdownToLatex:
     @staticmethod
     def _replace_img(match) -> str:
         image_path = match.group(1)
-        replacement = f"\\vspace{{0.5cm}}\n\\begin{{figure}}[H]\n\t\\centering\n\t\\includegraphics[width=0.9\\linewidth]{{../{MarkdownToLatex.DATASET_PATH}/{image_path}}}\n\\end{{figure}}\n"
+        replacement = f"\\vspace{{0.5cm}}\n\\begin{{figure}}[H]\n\t\\centering\n\t\\includegraphics[width=0.9\\linewidth]{{{MarkdownToLatex.DATASET_PATH}/{image_path}}}\n\\end{{figure}}\n"
         return replacement
 
     @staticmethod
@@ -100,15 +100,12 @@ class LargeQuestionsSet(BaseQuestionsSet):
                 self.dataset.append(latex_content)
                 index += 1
 
-    def generate(self) -> None:
+    def _generate_latex_content(self) -> None:
 
         latex_content = self.header
 
         indexes = self._pick_indexes()
-        
+
         latex_content = "\n".join([self.dataset[index] for index in indexes])
 
-        with open(
-            f"{os.path.dirname(__main__.__file__)}/latex/tmp/{self.name.lower()}_set.tex", mode="w", encoding="UTF-8"
-        ) as fp:
-            fp.write(latex_content)
+        self.latex_content = latex_content

@@ -1,6 +1,7 @@
 import abc
 from typing import List
 import random
+import os
 
 
 class BaseQuestionsSet:
@@ -18,14 +19,13 @@ class BaseQuestionsSet:
         self.name = name
         self.nb_questions = nb_questions
         self.consigne = consigne
-        self.dataset_path = dataset_path
+        self.dataset_path = f"{os.getcwd()}/{dataset_path}"
         self.dataset: List[str] = []
         self._load_dataset()
-    
+        self.latex_content = None
+
         if len(self.dataset) == 0:
-            raise ValueError(
-                f"Error creating dataset {self.name}:\n Dataset is empty."
-            )
+            raise ValueError(f"Error creating dataset {self.name}:\n Dataset is empty.")
 
         if len(self.dataset) < self.nb_questions:
             raise ValueError(
@@ -39,9 +39,17 @@ class BaseQuestionsSet:
             + r"}\\"
             + "\n\n"
         )
-        
+
     def _pick_indexes(self) -> List[int]:
         return random.sample(range(len(self.dataset)), self.nb_questions)
+
+    def _write_latex_content(self, latex_path: str) -> None:
+        with open(
+            f"{latex_path}/tmp/{self.name.lower()}_set.tex",
+            mode="w",
+            encoding="UTF-8",
+        ) as fp:
+            fp.write(self.latex_content)
 
     @abc.abstractmethod
     def _load_dataset(self) -> None:
@@ -50,8 +58,17 @@ class BaseQuestionsSet:
         """
         pass
 
+    def generate(self, latex_path: str) -> None:
+        """
+        Pick the question at random and generate the corresponding latex files.
+        """
+        if self.latex_content == None:
+            self._generate_latex_content()
+
+        self._write_latex_content(latex_path)
+
     @abc.abstractmethod
-    def generate(self) -> None:
+    def _generate_latex_content(self, latex_path: str) -> None:
         """
         Pick the question at random and generate the corresponding latex files.
         """
