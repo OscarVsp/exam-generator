@@ -38,20 +38,27 @@ class Generator:
         year: str,
         session: str,
         reset_page_counter: bool = False,
-        output_dir: str = None
+        output_dir: str = None,
     ) -> None:
         self.course_name = course_name
         self.course_code = course_code
         self.year = year
         self.session = session
         self.reset_page_counter = reset_page_counter
-        self.output_dir = f"{os.getcwd()}/{output_dir}" if output_dir else f"{os.path.dirname(__main__.__file__)}/exam_files"
+        self.output_dir = (
+            f"{os.getcwd()}/{output_dir}"
+            if output_dir
+            else f"{os.path.dirname(__main__.__file__)}/exam_files"
+        )
         if not os.path.exists(self.output_dir):
             print(f"Directory does not exist. Creating: {self.output_dir}")
             os.makedirs(self.output_dir)
+
         self.questions_sets: List[BaseQuestionsSet] = []
         self.main_content: str = ""
-        self.latex_path: str = os.path.dirname(__file__)+"/latex"
+        self.latex_path: str = os.path.dirname(__file__) + "/latex"
+        if not os.path.exists(self.latex_path + "/tmp"):
+            os.makedirs(self.latex_path + "/tmp")
 
         self._clear_tmp()
 
@@ -68,7 +75,9 @@ class Generator:
         latex_content += r"\newcommand{\session}{" + self.session + "}\n"
         latex_content += r"\newcommand{\coursename}{" + self.course_name + "}\n"
         latex_content += r"\newcommand{\coursecode}{" + self.course_code + "}"
-        with open(self.latex_path+"/tmp/header.sty", mode="w", encoding="UTF-8") as fp:
+        with open(
+            self.latex_path + "/tmp/header.sty", mode="w", encoding="UTF-8"
+        ) as fp:
             fp.write(latex_content)
 
     def _generate_main(self) -> None:
@@ -90,11 +99,13 @@ class Generator:
             if self.reset_page_counter:
                 latex_content += f"\\setcounter{{page}}{{1}}\n"
         latex_content += self._MAIN_POSTFIX
-        with open(self.latex_path+"/main.tex", mode="w", encoding="UTF-8") as fp:
+        with open(self.latex_path + "/main.tex", mode="w", encoding="UTF-8") as fp:
             fp.write(latex_content)
 
     def _generate_student_sty(self, name: str, matricule: int = None) -> None:
-        with open(self.latex_path+"/tmp/student_name.sty", mode="w", encoding="UTF-8") as fp:
+        with open(
+            self.latex_path + "/tmp/student_name.sty", mode="w", encoding="UTF-8"
+        ) as fp:
             fp.write(f"\\newcommand{{\\name}}{{{name}}}")
             if matricule is not None:
                 fp.write(f"\\newcommand{{\\matricule}}{{\\\\ {matricule}}}")
@@ -111,12 +122,13 @@ class Generator:
         Args:
             name (str, optional): name of the student.
         """
-        subprocess.run(["make", "-C", self.latex_path], check=False, stdout = subprocess.DEVNULL)
+        subprocess.run(
+            ["make", "-C", self.latex_path], check=False, stdout=subprocess.DEVNULL
+        )
         os.rename(
-            self.latex_path+"/output-files/main.pdf",
+            self.latex_path + "/output-files/main.pdf",
             f"{self.output_dir}/{name.replace(' ','_')}_{self.course_code}_EXAM_{self.year}_{self.session}.pdf",
         )
-        
 
     def _generate_set(self, name: str, matricule: int = None) -> None:
         """
@@ -141,8 +153,10 @@ class Generator:
             new_set (BaseQuestionsSet): The question set to be added.
         """
         self.questions_sets.append(new_set)
-        
-    def _generate_student(self, student_name: str, student_matricule: int = None) -> None:
+
+    def _generate_student(
+        self, student_name: str, student_matricule: int = None
+    ) -> None:
         """
         Internal method to generate exam file for a single student.
 
@@ -179,13 +193,15 @@ class Generator:
         Args:
             students_dict (dict): The dict of `{name:matricule}` pairs".
         """
-        
+
         self._generate_main()
         for name, matricule in students_dict.items():
             self._generate_student(name, matricule)
         print("Finished")
 
-    def generate_from_csv(self, filename: str = os.path.dirname(__main__.__file__)+"/students_list.csv") -> None:
+    def generate_from_csv(
+        self, filename: str = os.path.dirname(__main__.__file__) + "/students_list.csv"
+    ) -> None:
         """
         Generate exam file for a list of student provided in a `.csv` file.
 
@@ -198,10 +214,14 @@ class Generator:
 
     def _clear_tmp(self) -> None:
 
-        subprocess.run(["make","-C",self.latex_path, "clean"], check=False, stdout = subprocess.DEVNULL)
+        subprocess.run(
+            ["make", "-C", self.latex_path, "clean"],
+            check=False,
+            stdout=subprocess.DEVNULL,
+        )
         tmp_files = [
-            os.path.join(self.latex_path+"/tmp", f)
-            for f in os.listdir(self.latex_path+"/tmp")
+            os.path.join(self.latex_path + "/tmp", f)
+            for f in os.listdir(self.latex_path + "/tmp")
             if f != "header.sty"
         ]
         for f in tmp_files:
@@ -211,7 +231,9 @@ class Generator:
                 pass
 
     @staticmethod
-    def _csv_to_dict(filename: str = os.path.dirname(__main__.__file__)+"/students_list.csv") -> Dict[str, int | None]:
+    def _csv_to_dict(
+        filename: str = os.path.dirname(__main__.__file__) + "/students_list.csv",
+    ) -> Dict[str, int | None]:
         students = {}
 
         with open(filename, mode="r", encoding="UTF-8") as fp:
