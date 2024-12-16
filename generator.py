@@ -8,9 +8,9 @@ import yaml
 
 # TODO Cleaner
 
-from .questions_set.base_question_set import BaseQuestionsSet
-from .questions_set.short_question import ShortQuestionsSet
-from .questions_set.large_question import LargeQuestionsSet
+from questions_set.base_question_set import BaseQuestionsSet
+from questions_set.short_question import ShortQuestionsSet
+from questions_set.large_question import LargeQuestionsSet
 
 
 class Generator:
@@ -294,3 +294,15 @@ class Generator:
                     else None
                 )
         return students
+
+
+if __name__ == "__main__":
+
+    if len(sys.argv) == 1:
+        Generator.gen_from_config("config.yaml")
+    elif len(sys.argv) == 2:
+        Generator.gen_from_config(sys.argv[1])
+    else:
+        raise Exception(
+            f"Generator expect no more than 1 arg but {len(sys.argv)-1} were provided."
+        )
