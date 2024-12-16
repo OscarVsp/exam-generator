@@ -106,6 +106,6 @@ class LargeQuestionsSet(BaseQuestionsSet):
 
         indexes = self._pick_indexes()
 
-        latex_content = "\n".join([self.dataset[index] for index in indexes])
+        latex_content += "\n".join([self.dataset[index] for index in indexes])
 
         self.latex_content = latex_content
