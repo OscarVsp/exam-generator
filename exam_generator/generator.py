@@ -122,9 +122,13 @@ class Generator:
         Args:
             name (str, optional): name of the student.
         """
-        subprocess.run(
-            ["make", "-C", self.latex_path], check=False, stdout=subprocess.DEVNULL
+        process = subprocess.run(
+            ["make", "-C", self.latex_path], stdout=subprocess.DEVNULL, timeout=60
         )
+        if process.returncode != 0:
+            raise Exception(
+                f"Fail to generate pdf. Make return code: {process.returncode}. Check if Latex is installed."
+            )
         os.rename(
             self.latex_path + "/output-files/main.pdf",
             f"{self.output_dir}/{name.replace(' ','_')}_{self.course_code}_EXAM_{self.year}_{self.session}.pdf",

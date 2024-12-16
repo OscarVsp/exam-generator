@@ -103,6 +103,7 @@ if __name__ == "__main__":
 # 4. TODOs
 
 - Dependencies and install
-- Cleaner console output
+- Debug, logs and exception handler
 - Clean latex packages
 - Option to cache the tmp file during a generation process (only usefull for big number of student)
+- Move to YAML base configuration ?
