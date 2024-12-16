@@ -1,9 +1,9 @@
 - [1. Dependencies](#1-dependencies)
-- [2. Usage](#2-usage)
-  - [2.1. Generator](#21-generator)
-  - [2.2. Questions sets](#22-questions-sets)
-    - [2.2.1. Short questions set](#221-short-questions-set)
-    - [2.2.2. Large questions set](#222-large-questions-set)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [2.2. Questions sets](#22-questions-sets)
+  - [2.2.1. Short questions set](#221-short-questions-set)
+  - [2.2.2. Large questions set](#222-large-questions-set)
 - [3. TODOs](#3-todos)
 
 # 1. Dependencies
@@ -13,69 +13,23 @@
 apt-get install -y git make texlive latexmk texlive-xetex
 ```
 
-# 2. Usage
 
-## 2.1. Generator
+# Configuration
 
-The `Generator` module handle the overall parameter of the exam, such as:
+The configuration is done via the `[config.yaml](config.yaml)` file.
 
-- `course_name` (str): Name of the course
-- `course_code` (str): Code of the course
-- `year` (str): academique year
-- `session` (str): current session
-- `reset_page_counter` (bool) (default=False): should the page counter be reset on each part of the exam.
-- `output_dir` (str): Output directory, relative to the working directory of the main python file.
+TODO better doc
 
-Once initialized, QuestionsSet can be added using the `.add_set(...)` method (see [2.2. Questions sets](#22-questions-sets)).
+# Usage 
 
-When `generate_from_csv(...)` is called, it load the [students_list.csv](students_list.csv) (default, can be changed) to get the list of students, then generate the pdf of the exam for each one of them.
+`make CONFIG=config.yaml`
 
-The `students_list.csv` can be directly edited or you can convert existing `xlsx` file. 
 
-Here is an example of the usage:
-```py
-import exam_generator as EG
-
-if __name__ == "__main__":
-
-    generator = EG.Generator(
-        course_name=r"Best courses ever",
-        course_code="BEAMS666",
-        year="1873-2024",
-        session="69nd",
-        reset_page_counter=True,
-        output_dir="exam-files-example",
-    )
-
-    generator.add_set(
-        EG.ShortQuestionsSet(
-            name="Theory",
-            dataset_path="database_example/short_questions.txt",
-            nb_questions=1,
-            consigne=r"Chat GPT is allowed. Preparation time: $\sim$ 10 sec.",
-            blank_line=4,
-        )
-    )
-
-    generator.add_set(
-        EG.LargeQuestionsSet(
-            name="Project",
-            dataset_path="database_example/large_questions",
-            nb_questions=1,
-            consigne=r"Michel Osée is allowed for this part.",
-            blank_page=1,
-        )
-    )
-
-    generator.generate_from_csv(filename="students_list.csv")
-
-```
-
-## 2.2. Questions sets
+# 2.2. Questions sets
 
 Questions sets are structures that contain the questions for a given part of the exam. There is two type of Questions sets:
 
-### 2.2.1. Short questions set
+## 2.2.1. Short questions set
 
 The short questions set contains small questions that are a few lines at most. Thoses questions can only contain text, no image or code block.
 
@@ -86,7 +40,7 @@ The questions have to be store in a `.txt` or `.md` file, with one question by l
 Example of such dataset can be seen in [database-example/short_questions.txt](database_example/short_questions.txt)
 
 
-### 2.2.2. Large questions set
+## 2.2.2. Large questions set
 
 The large questions set contains bigger question each store in their own `n_question.md` file, where `n` is the index of the question (start at 1, SHOULD BE CONTINUOUS). All files should be contain in a folder that is used for the `dataset_path` parameter.
 
