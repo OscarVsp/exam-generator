@@ -78,6 +78,10 @@ class Generator:
 
     @classmethod
     def gen_from_config(cls, filename: str) -> "Generator":
+
+        if cls._ROOT_PATH:
+            filename = cls._ROOT_PATH + "/" + filename
+
         with open(filename, "r") as file:
             config = yaml.safe_load(file)
             gen = Generator(
