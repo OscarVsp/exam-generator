@@ -493,4 +493,4 @@ exam-files/**
 !exam-files/**/.gitkeep
 *.sty
 *.tex
-!exam_generator/latex/preamble.sty
+!latex/preamble.sty

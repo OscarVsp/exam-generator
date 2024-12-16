@@ -1,0 +1,78 @@
+%\usepackage{a4wide} 
+
+\usepackage[top=65pt,bottom=55pt,left=55pt,right=55pt]{geometry}
+
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{listings} 
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{helvet}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{subcaption}
+% These are default fonts for code
+\renewcommand{\ttdefault}{pcr}
+
+% Hyperlinks
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+
+% Setup header and Footer 
+\usepackage{tmp/header}
+\usepackage{tmp/student_name}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.5pt} 
+\renewcommand{\footrulewidth}{0.5pt}
+\lhead{\name \matricule}
+\rhead{[\coursecode] \coursename \\ \session \space session \academicyear}
+\lfoot{}
+%\cfoot is set by the generator to display each part
+\rfoot{Page \thepage}
+
+% Set paragraph indent to 0
+\setlength{\parindent}{0pt}
+
+% Set paragraph skip to 0
+\setlength{\parskip}{0pt}
+
+% Buletted list
+\setlist{itemsep=0pt}
+%\setlist{topsep=0pt}
+
+% Set-up the default listings environement
+\lstdefinestyle{DragoStyle}{
+	 frameround=ffff,
+    backgroundcolor=\color{white},   
+    commentstyle=\color{gray},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{purple},
+    basicstyle=\scriptsize\ttfamily,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=7pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=3,
+	 frame=trbl,
+	 xleftmargin=15pt
+}
+\lstset{language=VHDL, basicstyle=\footnotesize\ttfamily, numbers=left, numberstyle=\tiny, stepnumber=1, numbersep=5pt, morecomment=[l]{//}}
+\lstset{style=DragoStyle, linewidth=0.95\textwidth}
+
+% Use always the same location for figures
+\graphicspath{{../}{./Figures/}}
+\usepackage{float}
