@@ -19,7 +19,7 @@ endif
 .PHONY: install
 install:
 	apt-get update
-	apt-get install -y git texlive latexmk texlive-xetex
+	apt-get install -y git texlive latexmk texlive-xetex python3-pip
 	pip3 install pyyaml
 
 # Help target to show usage information
