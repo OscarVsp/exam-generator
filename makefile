@@ -18,8 +18,8 @@ endif
 # Install dependencies target
 .PHONY: install
 install:
-	sudo apt-get update
-	sudo apt-get install -y git texlive latexmk texlive-xetex
+	apt-get update
+	apt-get install -y git texlive latexmk texlive-xetex
 	pip3 install pyyaml
 
 # Help target to show usage information
