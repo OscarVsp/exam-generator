@@ -19,5 +19,5 @@ sets:
       blank_page: 1
       
 reset_page_counter: true
-output_dir: "exam-files-examples"
+output_dir: "exam-files-example"
 csv_path: "students_list.csv"
