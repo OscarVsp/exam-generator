@@ -56,4 +56,3 @@ Example of such dataset can be seen in [database-example/large_question/](databa
 - Clean latex packages
 - Option to cache the tmp file during a generation process (only usefull for big number of student)
 - Better docs
-- Make a docker image ?
