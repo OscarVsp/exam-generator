@@ -11,4 +11,4 @@ COPY . /app
 RUN apt-get update && apt-get install -y make && pip install pyyaml
 
 # Specify the entrypoint for the container (adjust as per your application)
-CMD ["python3", "generator.py", "/app/config.yaml", "/app/students_list.csv", "/app/dataset","/app/output_dir"]
+CMD ["python3", "generator.py", "/app/config.yaml", "/app/students_list.csv", "/app/database","/app/output_dir"]
