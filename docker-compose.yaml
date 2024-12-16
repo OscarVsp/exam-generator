@@ -4,7 +4,7 @@ services:
   app:
     image: oscarvsp/exam-generator:latest
     volumes:
-      - ./config.yaml:/app/config.yaml
-      - ./students_list.csv:/app/students_list.csv
+      - ./config_example.yaml:/app/config.yaml
+      - ./students_list_example.csv:/app/students_list.csv
       - ./database_example:/app/database
       - ./exam-files-example:/app/output
