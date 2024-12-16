@@ -15,9 +15,17 @@ else
 	python3 $(PYTHON_SCRIPT) "$(CALL_DIR)"
 endif
 
+# Install dependencies target
+.PHONY: install
+install:
+	sudo apt-get update
+	sudo apt-get install -y git texlive latexmk texlive-xetex
+	pip3 install pyyaml
+
 # Help target to show usage information
 .PHONY: help
 help:
 	@echo "Usage: make run [CONFIG=<path_to_config_file>]"
 	@echo "  CONFIG=<path_to_config_file>  Path to a YAML configuration file to be passed to the Python script."
-	@echo "  The current directory (where make is called) is also passed to the Python script, and spaces in paths are handled."
+	@echo "  The directory from which make is called is also passed to the Python script."
+	@echo "To install dependencies, run: make install"

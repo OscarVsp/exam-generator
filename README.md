@@ -9,10 +9,7 @@
 # 1. Dependencies
 
 
-```
-apt-get install -y git make texlive latexmk texlive-xetex
-```
-
+`make install`
 
 # Configuration
 
@@ -59,5 +56,4 @@ Example of such dataset can be seen in [database-example/large_question/](databa
 - Clean latex packages
 - Option to cache the tmp file during a generation process (only usefull for big number of student)
 - Better docs
-- Move to YAML base configuration ?
 - Make a docker image ?
