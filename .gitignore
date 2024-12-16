@@ -491,3 +491,6 @@ generator/latex/output-files/**
 !generator/latex/output-files/**/.gitkeep
 exam-files/**
 !exam-files/**/.gitkeep
+*.sty
+*.tex
+!exam_generator/latex/preamble.sty
