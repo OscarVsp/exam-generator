@@ -277,7 +277,6 @@ if __name__ == "__main__":
         print("No config provided was provided. Using example configuration...")
         gen = Generator("/home/oscar/Documents/exam_generator/config_example.yaml", "/home/oscar/Documents/exam_generator/students_list_example.csv", "/home/oscar/Documents/exam_generator/database_example/", "/home/oscar/Documents/exam_generator/exam-files-example/")
     elif len(sys.argv) == 5:
-        print(f"config={sys.argv[1]}, student={sys.argv[2]}, database={sys.argv[3]}, exam={sys.argv[4]}")
         gen = Generator(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
     else:
         raise Exception(f"Incorrect parameters.")
