@@ -7,17 +7,15 @@ exam:
 sets:
   - short:
       name: Theory
-      path: "database_example/short_questions.txt"
+      path: "short_questions.txt"
       size: 1
       consigne: "Chat GPT is allowed. Preparation time: $\\sim$ 10 sec."
       blank_line: 4
   - large:
       name: Project
-      path: "database_example/large_questions"
+      path: "large_questions"
       size: 1
       consigne: "Michel Osée is allowed for this part."
       blank_page: 1
       
 reset_page_counter: true
-output_dir: "exam-files-example"
-csv_path: "students_list.csv"
