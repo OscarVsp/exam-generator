@@ -9,3 +9,4 @@ all:
 
 clean:
 	rm -rf $(OUTPUT_DIR)
+	rm -rf tmp/*

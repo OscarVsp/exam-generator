@@ -11,12 +11,13 @@ class ShortQuestionsSet(BaseQuestionsSet):
         self,
         name,
         dataset_path: str,
+        latex_path: str,
         nb_questions: int = 1,
         consigne: str = None,
         blank_line: int = 4,
     ) -> None:
         self.blank_line = blank_line
-        super().__init__(name, dataset_path, nb_questions, consigne=consigne)
+        super().__init__(name,  dataset_path, latex_path, nb_questions, consigne=consigne)
 
     def _load_dataset(self) -> None:
 
@@ -34,11 +35,10 @@ class ShortQuestionsSet(BaseQuestionsSet):
                 for q in fp.readlines()
             ]
 
-    def _generate_latex_content(self) -> None:
+    def _generate_latex_content(self, indexes: List[int]) -> None:
 
         latex_content = self.header
 
-        indexes = self._pick_indexes()
 
         if len(indexes) > 1:
             latex_content += "\\begin{enumerate}\n"

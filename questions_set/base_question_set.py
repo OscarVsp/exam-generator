@@ -13,6 +13,7 @@ class BaseQuestionsSet:
         self,
         name,
         dataset_path: str,
+        latex_path: str,
         nb_questions: int = 1,
         consigne: str = None,
     ) -> None:
@@ -24,6 +25,11 @@ class BaseQuestionsSet:
         self.dataset: List[str] = []
         self._load_dataset()
         self.latex_content = None
+        
+        self.path_prefix = f"{latex_path}/tmp/{self.name.lower()}/question"
+
+        if not os.path.exists(f"{latex_path}/tmp/{self.name.lower()}"):
+            os.makedirs(f"{latex_path}/tmp/{self.name.lower()}")
 
         if len(self.dataset) == 0:
             raise ValueError(f"Error creating dataset {self.name}:\n Dataset is empty.")
@@ -44,9 +50,17 @@ class BaseQuestionsSet:
     def _pick_indexes(self) -> List[int]:
         return random.sample(range(len(self.dataset)), self.nb_questions)
 
-    def _write_latex_content(self, latex_path: str) -> None:
+    
+    @abc.abstractmethod
+    def _generate_latex_content(self, indexes: List[int]) -> None:
+        """
+        Pick the question at random and generate the corresponding latex files.
+        """
+        pass
+
+    def _write_latex_content(self, filename: str) -> None:
         with open(
-            f"{latex_path}/tmp/{self.name.lower()}_set.tex",
+            f"{filename}",
             mode="w",
             encoding="UTF-8",
         ) as fp:
@@ -59,18 +73,20 @@ class BaseQuestionsSet:
         """
         pass
 
-    def generate(self, latex_path: str) -> None:
+    def get_filename(self, indexes: List[int]) -> str:
+        return f"{self.path_prefix}_{"_".join(str(i+1) for i in indexes)}.tex"
+
+    def generate(self) -> None:
         """
         Pick the question at random and generate the corresponding latex files.
         """
-        if self.latex_content == None:
-            self._generate_latex_content()
 
-        self._write_latex_content(latex_path)
+        indexes = self._pick_indexes()
+        filename = self.get_filename(indexes)
+        if not os.path.exists(filename):
+            self._generate_latex_content(indexes)
+            self._write_latex_content(filename)
+        else:
+            print("reused cached file")
+        self.current_file = filename
 
-    @abc.abstractmethod
-    def _generate_latex_content(self, latex_path: str) -> None:
-        """
-        Pick the question at random and generate the corresponding latex files.
-        """
-        pass

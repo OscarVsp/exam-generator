@@ -73,12 +73,13 @@ class LargeQuestionsSet(BaseQuestionsSet):
         self,
         name,
         dataset_path: str,
+        latex_path: str,
         nb_questions: int = 1,
         consigne: str = None,
         blank_page: int = 1,
     ) -> None:
         self.blank_page = blank_page
-        super().__init__(name, dataset_path, nb_questions, consigne=consigne)
+        super().__init__(name, dataset_path, latex_path, nb_questions, consigne=consigne, )
 
     def _load_dataset(self) -> None:
         self.dataset: List[str] = []
@@ -100,11 +101,9 @@ class LargeQuestionsSet(BaseQuestionsSet):
                 self.dataset.append(latex_content)
                 index += 1
 
-    def _generate_latex_content(self) -> None:
+    def _generate_latex_content(self, indexes: List[int]) -> None:
 
         latex_content = self.header
-
-        indexes = self._pick_indexes()
 
         latex_content += "\n".join([self.dataset[index] for index in indexes])
 
