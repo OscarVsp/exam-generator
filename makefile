@@ -1,4 +1,4 @@
-# Makefile for running a fixed Python script with an optional YAML configuration file
+# Makefile for running a fixed Python script with optional YAML CFGuration file and additional parameters
 
 # Define the Python script path
 PYTHON_SCRIPT = generator.py
@@ -9,11 +9,15 @@ CALL_DIR := $(PWD)
 # Default target
 .PHONY: run
 run:
-ifdef CONFIG
-	python3 $(PYTHON_SCRIPT) "$(CALL_DIR)" "$(CONFIG)"
-else
-	python3 $(PYTHON_SCRIPT) "$(CALL_DIR)"
-endif
+	@if [ -n "$(CONF)" ] || [ -n "$(STUDENTS)" ] || [ -n "$(DS_PATH)" ] || [ -n "$(OUTPUT_PATH)" ]; then \
+		if [ -z "$(CONF)" ] || [ -z "$(STUDENTS)" ] || [ -z "$(DS_PATH)" ] || [ -z "$(OUTPUT_PATH)" ]; then \
+			$(MAKE) help; \
+			exit 1; \
+		fi; \
+		python3 $(PYTHON_SCRIPT) "$(CALL_DIR)/$(CONF)" "$(CALL_DIR)/$(STUDENTS)" "$(CALL_DIR)/$(DS_PATH)" "$(CALL_DIR)/$(OUTPUT_PATH)"; \
+	else \
+		python3 $(PYTHON_SCRIPT); \
+	fi
 
 # Install dependencies target
 .PHONY: install
@@ -24,7 +28,10 @@ install:
 # Help target to show usage information
 .PHONY: help
 help:
-	@echo "Usage: make run [CONFIG=<path_to_config_file>]"
-	@echo "  CONFIG=<path_to_config_file>  Path to a YAML configuration file to be passed to the Python script."
+	@echo "Usage: make run [CONF=<path_to_CFG_file>] [STUDENTS=<path_to_STUDENTS>] [DS_PATH=<path_to_dataset>] [OUTPUT_PATH=<path_to_output_dir>]"
+	@echo "  CONF=<path_to_CONF_file>      Path to a YAML CFGuration file to be passed to the Python script."
+	@echo "  STUDENTS=<path_to_STUDENTS> Path to the student list file."
+	@echo "  DS_PATH=<path_to_dataset>    Path to the dataset directory."
+	@echo "  OUTPUT_PATH=<path_to_output_dir>   Path to the output directory."
 	@echo "  The directory from which make is called is also passed to the Python script."
 	@echo "To install dependencies, run: make install"
