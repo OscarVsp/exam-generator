@@ -4,6 +4,7 @@ import subprocess
 import os, sys
 import random
 import csv
+import yaml
 
 # TODO Cleaner
 
@@ -63,6 +64,44 @@ class Generator:
         self._clear_tmp()
 
         self._generate_header()
+
+    @classmethod
+    def gen_from_config(cls, filename: str) -> "Generator":
+        with open(filename, "r") as file:
+            config = yaml.safe_load(file)
+            gen = Generator(
+                config["exam"]["name"],
+                config["exam"]["code"],
+                config["exam"]["year"],
+                config["exam"]["session"],
+                config["reset_page_counter"],
+                config["output_dir"],
+            )
+            for set_config_item in config["sets"]:
+                set_type = list(set_config_item.keys())[0]  # FIXME not safe
+                set_config = set_config_item[set_type]
+                if set_type.lower() == "short":
+                    new_set = ShortQuestionsSet(
+                        set_config["name"],
+                        set_config["path"],
+                        set_config["size"],
+                        set_config["consigne"],
+                        set_config["blank_line"],
+                    )
+                elif set_type.lower() == "large":
+                    new_set = LargeQuestionsSet(
+                        set_config["name"],
+                        set_config["path"],
+                        set_config["size"],
+                        set_config["consigne"],
+                        set_config["blank_page"],
+                    )
+                else:
+                    raise ValueError(
+                        f'Error loading the config from file. Set type "{set_type}" is not valid.'
+                    )
+                gen.add_set(new_set)
+            gen.generate_from_csv(config["csv_path"])
 
     def _generate_header(self) -> None:
         """
