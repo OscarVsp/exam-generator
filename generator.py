@@ -32,6 +32,8 @@ class Generator:
 
     _MAIN_POSTFIX = "\\end{document}"
 
+    _ROOT_PATH = None
+
     def __init__(
         self,
         course_name: str,
@@ -46,11 +48,20 @@ class Generator:
         self.year = year
         self.session = session
         self.reset_page_counter = reset_page_counter
-        self.output_dir = (
-            f"{os.getcwd()}/{output_dir}"
-            if output_dir
-            else f"{os.path.dirname(__main__.__file__)}/exam_files"
-        )
+
+        if self._ROOT_PATH:
+            self.output_dir = (
+                f"{self._ROOT_PATH}/{output_dir}"
+                if output_dir
+                else f"{self._ROOT_PATH}/exam_files"
+            )
+        else:
+            self.output_dir = (
+                f"{os.getcwd()}/{output_dir}"
+                if output_dir
+                else f"{os.path.dirname(__main__.__file__)}/exam_files"
+            )
+
         if not os.path.exists(self.output_dir):
             print(f"Directory does not exist. Creating: {self.output_dir}")
             os.makedirs(self.output_dir)
@@ -101,7 +112,7 @@ class Generator:
                         f'Error loading the config from file. Set type "{set_type}" is not valid.'
                     )
                 gen.add_set(new_set)
-            gen.generate_from_csv(config["csv_path"])
+            gen.generate_from_csv(gen._ROOT_PATH + "/" + config["csv_path"])
 
     def _generate_header(self) -> None:
         """
@@ -244,7 +255,8 @@ class Generator:
         print("Finished")
 
     def generate_from_csv(
-        self, filename: str = os.path.dirname(__main__.__file__) + "/students_list.csv"
+        self,
+        filename: str = os.path.dirname(__main__.__file__) + "/students_list.csv",
     ) -> None:
         """
         Generate exam file for a list of student provided in a `.csv` file.
@@ -298,11 +310,14 @@ class Generator:
 
 if __name__ == "__main__":
 
-    if len(sys.argv) == 1:
-        Generator.gen_from_config("config.yaml")
-    elif len(sys.argv) == 2:
-        Generator.gen_from_config(sys.argv[1])
-    else:
+    if len(sys.argv) > 3:
         raise Exception(
             f"Generator expect no more than 1 arg but {len(sys.argv)-1} were provided."
         )
+
+    Generator._ROOT_PATH = sys.argv[1]
+
+    if len(sys.argv) == 2:
+        Generator.gen_from_config("config.yaml")
+    elif len(sys.argv) == 3:
+        Generator.gen_from_config(sys.argv[2])
