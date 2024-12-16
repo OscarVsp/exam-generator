@@ -320,6 +320,7 @@ if __name__ == "__main__":
         )
 
     Generator._ROOT_PATH = sys.argv[1]
+    BaseQuestionsSet._ROOT_PATH = sys.argv[1]
 
     if len(sys.argv) == 2:
         Generator.gen_from_config("config.yaml")

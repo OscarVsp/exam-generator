@@ -9,6 +9,8 @@ class BaseQuestionsSet:
     Base class for QuestionSet. Do not use directly !
     """
 
+    _ROOT_PATH = None
+
     def __init__(
         self,
         name,
@@ -19,7 +21,11 @@ class BaseQuestionsSet:
         self.name = name
         self.nb_questions = nb_questions
         self.consigne = consigne
-        self.dataset_path = f"{os.getcwd()}/{dataset_path}"
+        self.dataset_path = (
+            self._ROOT_PATH + "/" + dataset_path
+            if self._ROOT_PATH
+            else f"{os.getcwd()}/{dataset_path}"
+        )
         self.dataset: List[str] = []
         self._load_dataset()
         self.latex_content = None
