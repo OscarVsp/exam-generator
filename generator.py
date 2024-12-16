@@ -13,17 +13,12 @@ from questions_set.base_question_set import BaseQuestionsSet
 from questions_set.short_question import ShortQuestionsSet
 from questions_set.large_question import LargeQuestionsSet
 
-
 class Generator:
     """
     The `Generator` class handle the overall parameter of the exam, such as:
 
-    - `course_name`
-    - `course_code`
-    - `year`
-    - `session`
 
-    When `generate_from_csv` is called, it load the `students_list.csv` (can be overide) to get the list of students, then generate the pdf of the exam for each one of them.
+    When `generate` is called, it load the `students_list.csv` (can be overide) to get the list of students, then generate the pdf of the exam for each one of them.
 
     The `students_list.csv` can be directly edited or you can convert existing `xlsx` file.
 
@@ -31,48 +26,49 @@ class Generator:
 
     def __init__(
         self,
-        course_name: str,
-        course_code: str,
-        year: str,
-        session: str,
-        reset_page_counter: bool = False,
+        config_file: str,
+        students_list_file: str,
+        database_path: str,
+        output_path: str
     ) -> None:
-        self.course_name = course_name
-        self.course_code = course_code
-        self.year = year
-        self.session = session
-        self.reset_page_counter = reset_page_counter
-        self.output_dir = "/app/output"
 
+        if not config_file.endswith(".yaml"):
+            raise TypeError(f'Parameter "config_file" need to be a ".yaml" file. Provided one is {config_file}')
+
+        if not students_list_file.endswith(".csv"):
+            raise TypeError(f'Parameter "students_list_file" need to be a ".csv" file. Provided one is {students_list_file}')
+
+        if not database_path.endswith("/"):
+            database_path += "/"
+        if not os.path.exists(database_path):
+            os.makedirs(database_path)
+
+        
+        if not output_path.endswith("/"):
+            output_path += "/"
+            
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
+
+        self.output_dir = output_path
         self.questions_sets: List[BaseQuestionsSet] = []
-        self.main_content: str = ""
-        self.latex_path: str = "/app/latex"
-        if not os.path.exists(self.latex_path + "/tmp"):
-            os.makedirs(self.latex_path + "/tmp")
 
-        self._clear_tmp()
 
-        self._generate_header()
-
-    @classmethod
-    def gen_from_config(cls, filename: str) -> "Generator":
-
-        with open(filename, "r") as file:
+        with open(config_file, "r") as file:
             config = yaml.safe_load(file)
-            gen = Generator(
-                config["exam"]["name"],
-                config["exam"]["code"],
-                config["exam"]["year"],
-                config["exam"]["session"],
-                config["reset_page_counter"],
-            )
+            self.course_name = config["exam"]["name"]
+            self.course_code = config["exam"]["code"]
+            self.year = config["exam"]["year"]
+            self.session = config["exam"]["session"]
+            self.reset_page_counter = config["reset_page_counter"]
+
             for set_config_item in config["sets"]:
                 set_type = list(set_config_item.keys())[0]  # FIXME not safe
                 set_config = set_config_item[set_type]
                 if set_type.lower() == "short":
                     new_set = ShortQuestionsSet(
                         set_config["name"],
-                        "/app/database/" + set_config["path"],
+                        database_path + set_config["path"],
                         set_config["size"],
                         set_config["consigne"],
                         set_config["blank_line"],
@@ -80,7 +76,7 @@ class Generator:
                 elif set_type.lower() == "large":
                     new_set = LargeQuestionsSet(
                         set_config["name"],
-                        "/app/database/" + set_config["path"],
+                        database_path + set_config["path"],
                         set_config["size"],
                         set_config["consigne"],
                         set_config["blank_page"],
@@ -89,8 +85,20 @@ class Generator:
                     raise ValueError(
                         f'Error loading the config from file. Set type "{set_type}" is not valid.'
                     )
-                gen.add_set(new_set)
-            gen.generate_from_csv("/app/students_list.csv")
+                self.questions_sets.append(new_set)
+
+        self.students_dict = self._csv_to_dict(students_list_file)
+
+        
+        self.main_content: str = ""
+        self.latex_path: str = os.path.dirname(__main__.__file__)+"/latex"
+        if not os.path.exists(self.latex_path + "/tmp"):
+            os.makedirs(self.latex_path + "/tmp")
+
+        self._clear_tmp()
+
+        self._generate_header()
+
 
     def _generate_header(self) -> None:
         """
@@ -178,15 +186,6 @@ class Generator:
         for questions_set in self.questions_sets:
             questions_set.generate(self.latex_path)
 
-    def add_set(self, new_set: BaseQuestionsSet) -> None:
-        """
-        Register the provided QuestionSet to be used for the exam.
-
-        Args:
-            new_set (BaseQuestionsSet): The question set to be added.
-        """
-        self.questions_sets.append(new_set)
-
     def _generate_student(
         self, student_name: str, student_matricule: int = None
     ) -> None:
@@ -219,7 +218,7 @@ class Generator:
         self._generate_student(student_name, student_matricule)
         print("Finished")
 
-    def generate_from_dict(self, students_dict: Dict[str, int | None]) -> None:
+    def generate(self) -> None:
         """
         Generate exam file for a dict of student with the following structure: `{name:matricule}`.
 
@@ -228,23 +227,10 @@ class Generator:
         """
 
         self._generate_main()
-        for name, matricule in students_dict.items():
+        for name, matricule in self.students_dict.items():
             self._generate_student(name, matricule)
         print("Finished")
 
-    def generate_from_csv(
-        self,
-        filename: str = os.path.dirname(__main__.__file__) + "/students_list.csv",
-    ) -> None:
-        """
-        Generate exam file for a list of student provided in a `.csv` file.
-
-        Args:
-            filename (str, optional): The filename of the `.csv` file. Defaults to "students_list.csv".
-        """
-        print(f"Loading student list from csv file...")
-        students_dict = Generator._csv_to_dict(filename)
-        self.generate_from_dict(students_dict)
 
     def _clear_tmp(self) -> None:
 
@@ -266,9 +252,9 @@ class Generator:
 
     @staticmethod
     def _csv_to_dict(
-        filename: str = os.path.dirname(__main__.__file__) + "/students_list.csv",
+        filename: str,
     ) -> Dict[str, int | None]:
-        students = {}
+        students : Dict[str, int | None] = {}
 
         with open(filename, mode="r", encoding="UTF-8") as fp:
             students_csv = csv.DictReader(fp)
@@ -287,5 +273,11 @@ class Generator:
 
 
 if __name__ == "__main__":
-
-    Generator.gen_from_config("/app/config.yaml")
+    if len(sys.argv) == 1:
+        print("No config provided was provided. Using example configuration...")
+        gen = Generator("/home/oscar/Documents/exam_generator/config_example.yaml", "/home/oscar/Documents/exam_generator/students_list_example.csv", "/home/oscar/Documents/exam_generator/database_example/", "/home/oscar/Documents/exam_generator/exam-files-example/")
+    elif len(sys.argv) == 5:
+        gen = Generator(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    else:
+        raise Exception(f"Incorrect parameters.")
+    gen.generate()
