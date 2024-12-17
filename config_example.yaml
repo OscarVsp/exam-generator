@@ -3,6 +3,7 @@ exam:
   code: BEAMS666
   year: 1873-2024
   session: 69nd
+  reset_page_counter: true
 
 sets:
   - short:
@@ -18,4 +19,3 @@ sets:
       consigne: "Michel Osée is allowed for this part."
       blank_page: 1
       
-reset_page_counter: true

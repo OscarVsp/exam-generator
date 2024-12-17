@@ -13,6 +13,7 @@ from questions_set.base_question_set import BaseQuestionsSet
 from questions_set.short_question import ShortQuestionsSet
 from questions_set.large_question import LargeQuestionsSet
 
+
 class Generator:
     """
     The `Generator` class handle the overall parameter of the exam, such as:
@@ -29,30 +30,33 @@ class Generator:
         config_file: str,
         students_list_file: str,
         database_path: str,
-        output_path: str
+        output_path: str,
     ) -> None:
 
         if not config_file.endswith(".yaml"):
-            raise TypeError(f'Parameter "config_file" need to be a ".yaml" file. Provided one is {config_file}')
+            raise TypeError(
+                f'Parameter "config_file" need to be a ".yaml" file. Provided one is {config_file}'
+            )
 
         if not students_list_file.endswith(".csv"):
-            raise TypeError(f'Parameter "students_list_file" need to be a ".csv" file. Provided one is {students_list_file}')
+            raise TypeError(
+                f'Parameter "students_list_file" need to be a ".csv" file. Provided one is {students_list_file}'
+            )
 
         if not database_path.endswith("/"):
             database_path += "/"
         if not os.path.exists(database_path):
             os.makedirs(database_path)
 
-        
         if not output_path.endswith("/"):
             output_path += "/"
-            
+
         if not os.path.exists(output_path):
             os.makedirs(output_path)
 
         self.output_dir = output_path
         self.questions_sets: List[BaseQuestionsSet] = []
-        self.latex_path: str = os.path.dirname(__main__.__file__)+"/latex"
+        self.latex_path: str = os.path.dirname(__main__.__file__) + "/latex"
 
         if not os.path.exists(self.latex_path + "/tmp"):
             os.makedirs(self.latex_path + "/tmp")
@@ -64,7 +68,7 @@ class Generator:
             self.course_code = config["exam"]["code"]
             self.year = config["exam"]["year"]
             self.session = config["exam"]["session"]
-            self.reset_page_counter = config["reset_page_counter"]
+            self.reset_page_counter = config["exam"]["reset_page_counter"]
 
             for set_config_item in config["sets"]:
                 set_type = list(set_config_item.keys())[0]  # FIXME not safe
@@ -95,11 +99,9 @@ class Generator:
 
         self.students_dict = self._csv_to_dict(students_list_file)
 
-        
         self.main_content: str = ""
 
         self._generate_header()
-
 
     def _generate_header(self) -> None:
         """
@@ -143,7 +145,6 @@ class Generator:
         for questions_set in self.questions_sets:
             questions_set.generate()
 
-
     def _generate_main(self) -> None:
         """
         Generate the `main.tex` file containing references to the differents part of the exam.
@@ -154,9 +155,7 @@ class Generator:
             latex_content += (
                 f"\\lfoot{{Part {index+1} - {questions_set.name}}}\n\\smallskip\n"
             )
-            latex_content += (
-                f"\\input{{{questions_set.current_file}}}\n\\newpage\n"
-            )
+            latex_content += f"\\input{{{questions_set.current_file}}}\n\\newpage\n"
             if self.reset_page_counter:
                 latex_content += f"\\setcounter{{page}}{{1}}\n"
         latex_content += "\\end{document}"
@@ -228,7 +227,6 @@ class Generator:
             self._generate_student(name, matricule)
         print("Finished")
 
-
     def _clear_tmp(self) -> None:
 
         subprocess.run(
@@ -251,7 +249,7 @@ class Generator:
     def _csv_to_dict(
         filename: str,
     ) -> Dict[str, int | None]:
-        students : Dict[str, int | None] = {}
+        students: Dict[str, int | None] = {}
 
         with open(filename, mode="r", encoding="UTF-8") as fp:
             students_csv = csv.DictReader(fp)
@@ -272,7 +270,12 @@ class Generator:
 if __name__ == "__main__":
     if len(sys.argv) == 1:
         print("No config provided was provided. Using example configuration...")
-        gen = Generator("/home/oscar/Documents/exam_generator/config_example.yaml", "/home/oscar/Documents/exam_generator/students_list_example.csv", "/home/oscar/Documents/exam_generator/database_example/", "/home/oscar/Documents/exam_generator/exam-files-example/")
+        gen = Generator(
+            "/home/oscar/Documents/exam_generator/config_example.yaml",
+            "/home/oscar/Documents/exam_generator/students_list_example.csv",
+            "/home/oscar/Documents/exam_generator/database_example/",
+            "/home/oscar/Documents/exam_generator/exam-files-example/",
+        )
     elif len(sys.argv) == 5:
         gen = Generator(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
     else:
