@@ -24,6 +24,8 @@ sets:
 | code               | text | The code of the course                           |
 | year               | text | The year of the exam                             |
 | session            | text | The session of the exam                          |
+| titlepage          | bool | Should there be a titlepage                      |
+| draft_pages        | int  | Number of blank pages at the end                 |
 | reset_page_counter | bool | Should the page counter reset between each parts |
 
 Example:

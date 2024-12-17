@@ -70,6 +70,7 @@ class Generator:
             self.year: str = exam_config["year"]
             self.session: str = exam_config["session"]
             self.title_page: bool = bool(exam_config.get("titlepage", False))
+            self.draft_pages: int = int(exam_config.get("draft_pages", 0))
             self.reset_page_counter: bool = bool(
                 exam_config.get("reset_page_counter", False)
             )
@@ -141,6 +142,8 @@ class Generator:
             latex_content += f"\\input{{\{questions_set.name}}}\n\\newpage\n"
             if self.reset_page_counter:
                 latex_content += f"\\setcounter{{page}}{{1}}\n"
+        if self.draft_pages:
+            latex_content += "\\lfoot{{Draft pages}}" + "\\newpage~" * self.draft_pages
         with open(self.latex_path + "/content.tex", mode="w", encoding="UTF-8") as fp:
             fp.write(latex_content)
 

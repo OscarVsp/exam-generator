@@ -4,6 +4,7 @@ exam:
   year: 1873-2024
   session: 69nd
   titlepage: true
+  draft_pages: 0
   reset_page_counter: true
 
 sets:
