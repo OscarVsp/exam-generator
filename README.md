@@ -10,4 +10,3 @@ For more information on the usage, see the [documentation](docs/documentation.md
 - Clean latex packages
 - QCM, QRM, True/Flase questions set
 - More format options
-- Title page
