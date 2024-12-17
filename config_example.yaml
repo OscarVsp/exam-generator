@@ -14,6 +14,12 @@ sets:
       size: 1
       consigne: "Chat GPT is allowed. Preparation time: $\\sim$ 10 sec."
       blank_line: 4
+  - qcm:
+      name: QCM
+      path: "qcm_questions.md"
+      size: 1
+      consigne: "Chat GPT is allowed. Preparation time: $\\sim$ 10 sec."
+      blank_line: 2
   - large:
       name: Project
       path: "large_questions"
