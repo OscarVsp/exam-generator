@@ -3,6 +3,7 @@ exam:
   code: BEAMS666
   year: 1873-2024
   session: 69nd
+  titlepage: true
   reset_page_counter: true
 
 sets:

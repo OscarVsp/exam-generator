@@ -495,3 +495,4 @@ exam-files/**
 *.tex
 !latex/preamble.sty
 !latex/main.tex
+!latex/title.tex
