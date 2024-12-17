@@ -64,12 +64,15 @@ class Generator:
 
         with open(config_file, "r") as file:
             config = yaml.safe_load(file)
-            self.course_name: str = config["exam"]["name"]
-            self.course_code: str = config["exam"]["code"]
-            self.year: str = config["exam"]["year"]
-            self.session: str = config["exam"]["session"]
-            self.title_page: bool = bool(config["exam"]["titlepage"])
-            self.reset_page_counter: bool = bool(config["exam"]["reset_page_counter"])
+            exam_config = config["exam"]
+            self.course_name: str = exam_config["name"]
+            self.course_code: str = exam_config["code"]
+            self.year: str = exam_config["year"]
+            self.session: str = exam_config["session"]
+            self.title_page: bool = bool(exam_config.get("titlepage", False))
+            self.reset_page_counter: bool = bool(
+                exam_config.get("reset_page_counter", False)
+            )
 
             for set_config_item in config["sets"]:
                 set_type = list(set_config_item.keys())[0]  # FIXME not safe
@@ -81,7 +84,7 @@ class Generator:
                         self.latex_path,
                         set_config["size"],
                         set_config["consigne"],
-                        set_config["blank_line"],
+                        set_config.get("blank_line", 0),
                     )
                 elif set_type.lower() == "large":
                     new_set = LargeQuestionsSet(
@@ -90,7 +93,7 @@ class Generator:
                         self.latex_path,
                         set_config["size"],
                         set_config["consigne"],
-                        set_config["blank_page"],
+                        set_config.get("blank_page", 0),
                     )
                 else:
                     raise ValueError(
@@ -99,8 +102,6 @@ class Generator:
                 self.questions_sets.append(new_set)
 
         self.students_dict = self._csv_to_dict(students_list_file)
-
-        self.main_content: str = ""
 
         self._generate_header()
         self._generate_content()
