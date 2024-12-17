@@ -55,4 +55,3 @@ Example of such dataset can be seen in [database-example/large_question/](databa
 - Debug, logs and exception handler
 - Clean latex packages
 - Better docs
-- Make a docker image ?
