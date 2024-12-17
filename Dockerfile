@@ -11,4 +11,4 @@ WORKDIR /app
 COPY . /app
 
 # Specify the entrypoint for the container (adjust as per your application)
-CMD ["python3", "generator.py", "/app/config.yaml", "/app/students_list.csv", "/app/database","/app/output_dir"]
+CMD ["python3", "generator.py", "/app/config.yaml", "/app/students_list.csv", "/app/database","/app/output"]
