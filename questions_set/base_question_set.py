@@ -25,7 +25,7 @@ class BaseQuestionsSet:
         self.dataset: List[str] = []
         self._load_dataset()
         self.latex_content = None
-        
+
         self.path_prefix = f"{latex_path}/tmp/{self.name.lower()}/question"
 
         if not os.path.exists(f"{latex_path}/tmp/{self.name.lower()}"):
@@ -50,7 +50,6 @@ class BaseQuestionsSet:
     def _pick_indexes(self) -> List[int]:
         return random.sample(range(len(self.dataset)), self.nb_questions)
 
-    
     @abc.abstractmethod
     def _generate_latex_content(self, indexes: List[int]) -> None:
         """
@@ -74,7 +73,7 @@ class BaseQuestionsSet:
         pass
 
     def get_filename(self, indexes: List[int]) -> str:
-        return f"{self.path_prefix}_{"_".join(str(i+1) for i in indexes)}.tex"
+        return f"{self.path_prefix}_{'_'.join(str(i+1) for i in indexes)}.tex"
 
     def generate(self) -> None:
         """
@@ -86,7 +85,4 @@ class BaseQuestionsSet:
         if not os.path.exists(filename):
             self._generate_latex_content(indexes)
             self._write_latex_content(filename)
-        else:
-            print("reused cached file")
         self.current_file = filename
-
