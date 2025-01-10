@@ -1,6 +1,6 @@
 services:
   app:
-    image: oscarvsp/exam-generator:latest
+    image: oscarvsp/exam-generator:dev
     volumes:
       - ./config_example.yaml:/app/config.yaml
       - ./students_list_example.csv:/app/students_list.csv
